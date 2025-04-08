@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   FiUser,
   FiAlertCircle,
@@ -8,7 +9,6 @@ import {
   FiEye,
   FiEyeOff,
 } from "react-icons/fi";
-import AuthService from "../services/authService";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +24,6 @@ const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -40,13 +39,9 @@ const SignUp = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.firstName.trim()) {
+    if (!formData.firstName.trim())
       newErrors.firstName = "First Name is required";
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last Name is required";
-    }
+    if (!formData.lastName.trim()) newErrors.lastName = "Last Name is required";
 
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
@@ -76,13 +71,15 @@ const SignUp = () => {
       setApiError("");
 
       try {
-        await AuthService.register(
-          formData.firstName,
-          formData.lastName,
-          formData.email,
-          formData.password,
-          formData.address
-        );
+        const API_URL = "http://localhost:8081/signup";
+
+        const response = await axios.post(API_URL, {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          address: formData.address,
+        });
 
         navigate("/signin", {
           state: { message: "Registration successful! Please sign in." },
@@ -124,6 +121,7 @@ const SignUp = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* First & Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
@@ -172,6 +170,7 @@ const SignUp = () => {
             </div>
           </div>
 
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -200,6 +199,7 @@ const SignUp = () => {
             )}
           </div>
 
+          {/* Address */}
           <div>
             <label
               htmlFor="address"
@@ -218,6 +218,7 @@ const SignUp = () => {
             />
           </div>
 
+          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -252,6 +253,7 @@ const SignUp = () => {
             )}
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-150"
