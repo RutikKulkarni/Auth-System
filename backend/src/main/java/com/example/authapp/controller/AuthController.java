@@ -10,7 +10,7 @@ import java.util.Map;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@CrossOrigin("*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class AuthController {
 
     private final AuthService authService;
@@ -22,6 +22,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+        return authService.login(email, password);
+    }
+
+    @PostMapping("/signin")
+    public String signin(@RequestBody Map<String, String> credentials) {
         String email = credentials.get("email");
         String password = credentials.get("password");
         return authService.login(email, password);
