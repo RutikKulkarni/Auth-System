@@ -34,7 +34,7 @@ const AuthService = {
   },
 
   login: async (email, password) => {
-    const response = await api.post("signin", {
+    const response = await api.post("login", {
       email,
       password,
     });
